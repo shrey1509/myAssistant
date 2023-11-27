@@ -1,11 +1,10 @@
-
 'use client'
 import Image from "next/image";
 import { useState,useRef } from "react";
 import OpenAI from 'openai';
 import { useSearchParams } from 'next/navigation'
 
-function page({ params: { assistantId } }) {
+function Embed({ params: { assistantId } }) {
     const [question,setQuestion] = useState("")
     const [chat,setChat] = useState([])
     const [thread,setThread] = useState(null)
@@ -38,107 +37,6 @@ function page({ params: { assistantId } }) {
             setTimeout(()=>getAnswer(threadId,runId),200)
         }
     }
-    // {
-    //     "options": {
-    //         "method": "get",
-    //         "path": "/threads/thread_PXFcpgwo7WlZBks1LYSkvyEi/messages",
-    //         "query": {},
-    //         "headers": {
-    //             "OpenAI-Beta": "assistants=v1"
-    //         }
-    //     },
-    //     "response": {},
-    //     "body": {
-    //         "object": "list",
-    //         "data": [
-    //             {
-    //                 "id": "msg_v6C0iDOuw1OFQcQbAT0pAynT",
-    //                 "object": "thread.message",
-    //                 "created_at": 1700830600,
-    //                 "thread_id": "thread_PXFcpgwo7WlZBks1LYSkvyEi",
-    //                 "role": "assistant",
-    //                 "content": [
-    //                     {
-    //                         "type": "text",
-    //                         "text": {
-    //                             "value": "Hello! How can I assist you today?",
-    //                             "annotations": []
-    //                         }
-    //                     }
-    //                 ],
-    //                 "file_ids": [],
-    //                 "assistant_id": "asst_0RouOAyXAAYGbMFpbWCxChwk",
-    //                 "run_id": "run_VPLx7XLBXlUPg0u4lHvjjWSV",
-    //                 "metadata": {}
-    //             },
-    //             {
-    //                 "id": "msg_nW8hwfRB6o7F6NkYaht9JAoC",
-    //                 "object": "thread.message",
-    //                 "created_at": 1700830599,
-    //                 "thread_id": "thread_PXFcpgwo7WlZBks1LYSkvyEi",
-    //                 "role": "user",
-    //                 "content": [
-    //                     {
-    //                         "type": "text",
-    //                         "text": {
-    //                             "value": "Hi",
-    //                             "annotations": []
-    //                         }
-    //                     }
-    //                 ],
-    //                 "file_ids": [],
-    //                 "assistant_id": null,
-    //                 "run_id": null,
-    //                 "metadata": {}
-    //             }
-    //         ],
-    //         "first_id": "msg_v6C0iDOuw1OFQcQbAT0pAynT",
-    //         "last_id": "msg_nW8hwfRB6o7F6NkYaht9JAoC",
-    //         "has_more": false
-    //     },
-    //     "data": [
-    //         {
-    //             "id": "msg_v6C0iDOuw1OFQcQbAT0pAynT",
-    //             "object": "thread.message",
-    //             "created_at": 1700830600,
-    //             "thread_id": "thread_PXFcpgwo7WlZBks1LYSkvyEi",
-    //             "role": "assistant",
-    //             "content": [
-    //                 {
-    //                     "type": "text",
-    //                     "text": {
-    //                         "value": "Hello! How can I assist you today?",
-    //                         "annotations": []
-    //                     }
-    //                 }
-    //             ],
-    //             "file_ids": [],
-    //             "assistant_id": "asst_0RouOAyXAAYGbMFpbWCxChwk",
-    //             "run_id": "run_VPLx7XLBXlUPg0u4lHvjjWSV",
-    //             "metadata": {}
-    //         },
-    //         {
-    //             "id": "msg_nW8hwfRB6o7F6NkYaht9JAoC",
-    //             "object": "thread.message",
-    //             "created_at": 1700830599,
-    //             "thread_id": "thread_PXFcpgwo7WlZBks1LYSkvyEi",
-    //             "role": "user",
-    //             "content": [
-    //                 {
-    //                     "type": "text",
-    //                     "text": {
-    //                         "value": "Hi",
-    //                         "annotations": []
-    //                     }
-    //                 }
-    //             ],
-    //             "file_ids": [],
-    //             "assistant_id": null,
-    //             "run_id": null,
-    //             "metadata": {}
-    //         }
-    //     ]
-    // }
     
     const askAssistant = async() => {
         let getQuestion = question
@@ -156,17 +54,12 @@ function page({ params: { assistantId } }) {
             getThread.id,
             { role: "user", content: getQuestion }
         );
-        // const messages = await openai.beta.threads.messages.list(
-        //     getThread.id
-        //   );
-        // console.log(messages)
         const getRun = await openai.beta.threads.runs.create(
             getThread.id,
             { assistant_id: assistantId }
         );
         setRun(getRun)
         getAnswer(getThread.id,getRun.id)
-        // setRunInterval(setInterval(()=>getAnswer(getThread.id,getRun.id),1000))
     }
     
     return (
@@ -184,8 +77,8 @@ function page({ params: { assistantId } }) {
 
             </div>
             <div className="flex flex-col gap-2 w-full h-full overflow-y-auto scroll">
-                {chat.map((msg)=>
-                <div key={msg} className={`${msg.isBot?'bg-gray-900 text-gray-100 self-start':'text-gray-900 bg-gray-100 self-end'} rounded-lg  px-3 py-2 max-w-sm`}>
+                {chat.map((msg, index)=>
+                <div key={index} className={`${msg.isBot?'bg-gray-900 text-gray-100 self-start':'text-gray-900 bg-gray-100 self-end'} rounded-lg  px-3 py-2 max-w-sm`}>
                     {msg.msg}
                 </div>)}
                
@@ -200,4 +93,4 @@ function page({ params: { assistantId } }) {
     );
 }
 
-export default page;
+export default Embed;
