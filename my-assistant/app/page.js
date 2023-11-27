@@ -110,9 +110,15 @@ export default function Home() {
       setFunctions(newFns)
     }
   }
-  const removeFile = (name) => {
-    var filteredArray = files.filter(e => e.name !== name)
+  const removeFile = async(file) => {
+    var filteredArray = files.filter(e => e.name !== file.name)
     setFiles(filteredArray)
+    if(assistantId!=null){
+      const deletedAssistantFile = await openai.beta.assistants.files.del(
+        assistantId,
+        file.id
+      );
+    }
   }
   const shareEmbed = (type) => {
     if(type==0){
@@ -210,7 +216,7 @@ export default function Home() {
             <label className=" text-sm font-medium " htmlFor="user_avatar">Upload files</label>
             <input className=" text-sm border border-gray-300 rounded-lg p-2 cursor-pointer bg-gray-50 focus:outline-none" aria-describedby="user_avatar_help" id="user_avatar" type="file" onChange={(e)=>setFiles([...files,e.target.files[0]])}/>
             <div class="flex gap-2">
-              {files.map((file,index)=><div className="text-xs w-min whitespace-nowrap border border-gray-400 py-1 px-2 rounded-xl flex gap-1">{file.name}  <b className=" cursor-pointer" onClick={()=>removeFile(file.name)}>x</b></div>)}
+              {files.map((file,index)=><div className="text-xs w-min whitespace-nowrap border border-gray-400 py-1 px-2 rounded-xl flex gap-1">{file.name}  <b className=" cursor-pointer" onClick={()=>removeFile(file)}>x</b></div>)}
             </div>
           </div>
 
