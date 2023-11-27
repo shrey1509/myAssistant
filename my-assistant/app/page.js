@@ -199,7 +199,7 @@ export default function Home() {
 
               </div>
             </div>
-            {functions.map((fn,index)=><div className="relative">
+            {functions.map((fn,index)=><div key={index} className="relative">
               <textarea id="functions" className="bg-gray-50 mt-3 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 h-60" required placeholder='{"name": "get_weather", "description": "Determine weather in my location"}'  value={fn} onChange={(e)=>addFunction(index,e.target.value)}/>
               <div className="absolute z-10 top-1 right-4 font-bold cursor-pointer" onClick={()=>removeFunction(index)}>x</div>
               </div>)}
